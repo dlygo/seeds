@@ -10,33 +10,37 @@ const HealthController = require('./health/health.controller');
 const UsersController = require('./user/user.controller');
 
 class App {
-    static bootstrap() {
-        return new App();
-    }
+  static bootstrap() {
+    return new App();
+  }
 
-    constructor() {
-        // create express js application
-        this.app = express();
+  constructor() {
+    // create express js application
+    this.app = express();
 
-        // Connect to MongoDB
-        dbConfig.connect();
+    // Middleware for parsing JSON bodies
+    this.app.use(express.json());
 
-        // add routes
-        this.routes();
-    }
+    // Connect to MongoDB
+    dbConfig.connect();
 
-    dbConnect(){
-        dbConfig.connect();
-    }
-    routes() {
-        this.app.use('/', new RootController().getRouter());
-        this.app.use('/healthz', new HealthController().getRouter());
-        this.app.use(`/users`, new UsersController().getRouter());
-    }
+    // add routes
+    this.routes();
+  }
+
+  dbConnect() {
+    dbConfig.connect();
+  }
+
+  routes() {
+    this.app.use('/', new RootController().getRouter());
+    this.app.use('/healthz', new HealthController().getRouter());
+    this.app.use('/users', new UsersController().getRouter());
+  }
 }
 
 function expressApp() {
-    return new App().app;
+  return new App().app;
 }
 
 module.exports = expressApp;
